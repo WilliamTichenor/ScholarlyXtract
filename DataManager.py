@@ -47,19 +47,14 @@ def data_setup():
     saveFile.close
     print("data ready!")
 
-    
+def data_load():
+    file = open("index", 'rb')
+    dataLoad = pickle.load(file)
+    file.close()
+    return dataLoad
 
 def safe_literal_eval(val):
     try:
         return ast.literal_eval(val)
     except (ValueError, SyntaxError):
         return []
-
-# Main method only for testing! this won't exist.
-if __name__ == "__main__":
-    #data_setup()
-
-    file = open("index", 'rb')
-    testing = pickle.load(file)
-    file.close()
-    print(testing[1])
