@@ -2,46 +2,61 @@ import pickle
 import pandas as pd
 import ast
 import re
+import ir_datasets
 
 def data_setup():
-    df = pd.read_csv('data/ProjectData.csv', encoding='utf8')
-    df.tail(2)
+    dataset = ir_datasets.load("cranfield")
     data = []
 
     #enum
-    TEXT = 0
-    BOW = 1
-    TAGS = 2
-    FOLLOWERS = 3
-    FRIENDS = 4
-    VERIFICATION = 5
-    USERNAME = 6
-    DATE = 7
+    ID = 0
+    AUTHORBOW = 1
+    TITLEBOW = 2
+    BODYBOW = 3
+    AUTHORLEN = 4
+    TITLELEN = 5
+    BODYLEN = 6
 
-    for i, row in df.iterrows():
-        txt = row['text']
+    for row in dataset.docs_iter():
+        txt = row.title
         txt = txt.lower()
         txt = txt.replace('\n', ' ')
         txt = re.sub(r'[^a-z0-9\s]', '', txt)
-        dict = {}
+        dictTitle = {}
         for w in txt.split():
-            if w in dict:
-                dict[w] += 1
+            if w in dictTitle:
+                dictTitle[w] += 1
             else:
-                dict[w] = 1
-        try:
-            data.append([
-                row['text'], 
-                dict, 
-                safe_literal_eval(row['hashtags']), 
-                int(row['user_followers']), 
-                int(row['user_friends']), 
-                (True if (row['user_verified'] == "True") else False), 
-                row['user_name'], 
-                row['date']
+                dictTitle[w] = 1
+        txt = row.author
+        txt = txt.lower()
+        txt = txt.replace('\n', ' ')
+        txt = re.sub(r'[^a-z0-9\s]', '', txt)
+        dictAuthor = {}
+        for w in txt.split():
+            if w in dictAuthor:
+                dictAuthor[w] += 1
+            else:
+                dictAuthor[w] = 1
+        txt = row.text
+        txt = txt.lower()
+        txt = txt.replace('\n', ' ')
+        txt = re.sub(r'[^a-z0-9\s]', '', txt)
+        dictBody = {}
+        for w in txt.split():
+            if w in dictBody:
+                dictBody[w] += 1
+            else:
+                dictBody[w] = 1
+        data.append([
+                row.doc_id, 
+                dictAuthor,
+                dictTitle,
+                dictBody, 
+                sum(dictAuthor.values()),
+                sum(dictTitle.values()),
+                sum(dictBody.values()),
             ])
-        except:
-            print("Line",i,"invalid")
     saveFile = open("index", 'wb')
     pickle.dump(data, saveFile)
     saveFile.close
@@ -53,8 +68,6 @@ def data_load():
     file.close()
     return dataLoad
 
-def safe_literal_eval(val):
-    try:
-        return ast.literal_eval(val)
-    except (ValueError, SyntaxError):
-        return []
+if __name__ == "__main__":
+    a = data_load()
+    print(a[0])
