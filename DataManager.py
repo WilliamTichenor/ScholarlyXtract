@@ -62,16 +62,16 @@ def data_setup():
     for row in data:
         for key in row[AUTHORBOW]:
             if key in totalBOW[0]:
-                totalBOW[0][key] += 1
-            else: totalBOW[0][key] = 1
+                totalBOW[0][key] += row[AUTHORBOW][key]
+            else: totalBOW[0][key] = row[AUTHORBOW][key]
         for key in row[TITLEBOW]:
             if key in totalBOW[1]:
-                totalBOW[1][key] += 1
-            else: totalBOW[1][key] = 1
+                totalBOW[1][key] += row[TITLEBOW][key]
+            else: totalBOW[1][key] = row[TITLEBOW][key]
         for key in row[BODYBOW]:
             if key in totalBOW[2]:
-                totalBOW[2][key] += 1
-            else: totalBOW[2][key] = 1
+                totalBOW[2][key] += row[BODYBOW][key]
+            else: totalBOW[2][key] = row[BODYBOW][key]
 
 
     saveFile = open("index", 'wb')
@@ -84,3 +84,8 @@ def data_load():
     dataLoad = pickle.load(file)
     file.close()
     return dataLoad
+
+if __name__ == "__main__":
+    #data_setup()
+    d = data_load()
+    print(d[1][2])
