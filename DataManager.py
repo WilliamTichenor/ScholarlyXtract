@@ -57,8 +57,25 @@ def data_setup():
                 sum(dictTitle.values()),
                 sum(dictBody.values()),
             ])
+    
+    totalBOW = [{}, {}, {}]
+    for row in data:
+        for key in row[AUTHORBOW]:
+            if key in totalBOW[0]:
+                totalBOW[0][key] += 1
+            else: totalBOW[0][key] = 1
+        for key in row[TITLEBOW]:
+            if key in totalBOW[1]:
+                totalBOW[1][key] += 1
+            else: totalBOW[1][key] = 1
+        for key in row[BODYBOW]:
+            if key in totalBOW[2]:
+                totalBOW[2][key] += 1
+            else: totalBOW[2][key] = 1
+
+
     saveFile = open("index", 'wb')
-    pickle.dump(data, saveFile)
+    pickle.dump((data, totalBOW), saveFile)
     saveFile.close
     print("data ready!")
 
@@ -67,7 +84,3 @@ def data_load():
     dataLoad = pickle.load(file)
     file.close()
     return dataLoad
-
-if __name__ == "__main__":
-    a = data_load()
-    print(a[0])
