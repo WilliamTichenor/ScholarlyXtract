@@ -84,8 +84,3 @@ def data_load():
     dataLoad = pickle.load(file)
     file.close()
     return dataLoad
-
-if __name__ == "__main__":
-    #data_setup()
-    d = data_load()
-    print(d[1][2])
