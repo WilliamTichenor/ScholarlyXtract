@@ -37,6 +37,7 @@ def data_setup():
             if w == "and": continue
             if w == "et": continue
             if w == "al": continue
+            if len(w) < 2: continue
             if w in dictAuthor:
                 dictAuthor[w] += 1
             else:
