@@ -4,6 +4,7 @@ from collections import Counter
 from collections import defaultdict
 import math
 import string
+import re
 
 #Enum
 ID = 0
@@ -75,3 +76,15 @@ def get_system_ndcg(docs, query_rels):
 
     return system_ndcg
 
+
+def convert_query_bow(s):
+    s = s.lower()
+    s = re.sub(r'[^a-z0-9\s]', '', s)
+    query_split = s.split()
+    bow = {}
+    for w in query_split:
+        if w in bow:
+            bow[w] += 1
+        else:
+            bow[w] = 1
+    return [-1, bow, len(query_split)]

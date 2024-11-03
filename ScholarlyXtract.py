@@ -1,6 +1,7 @@
 import DataManager
 import Score
 import Evaluation
+import re
 
 if __name__ == "__main__":
 
@@ -17,8 +18,10 @@ if __name__ == "__main__":
     elif func == "q":
         user_query = input("Enter Query")
         #Take user query and convert to bow and total length
-        top_docs = Score.get_top_docs('''THIS IS WHERE THE CONVERTY QUERY GOES''', data[0])
+        
+        top_docs = Score.get_top_docs(Evaluation.convert_query_bow(user_query), data)
         #Do something with those documents returned
+        print(top_docs)
 
 
         
