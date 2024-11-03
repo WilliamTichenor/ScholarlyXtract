@@ -2,13 +2,16 @@ import DataManager
 import Score
 import Evaluation
 import re
+import ir_datasets
+
 
 if __name__ == "__main__":
 
 
     DataManager.data_setup()
     data = DataManager.data_load()
-    print(data[2][0])
+
+    dataset = ir_datasets.load("cranfield")
 
     func = input("Enter e to evaluate system | Enter q to query: ")
 

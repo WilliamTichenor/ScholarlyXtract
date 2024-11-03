@@ -11,25 +11,25 @@ BODYLEN = 6
 #Weights
 k1 = 1.6 #Typically between 1.2-2
 
-B_body = 0.5
-B_title = 0.5
+B_body = 0.1
+B_title = 0.4
 B_author = 0.5
 
-W_body = 0.5
-W_title = 0.5
-W_author = 0.5
+W_body = 1
+W_title = 2
+W_author = 5
 
 
 #How many documents we want to return
-n = 10
+n = 1400
 
 
 #Gets score for one document based on query
 def get_score(query, doc, data):
 	doc_score = 0
-	avg_body_len = sum(doc[BODYLEN] for doc in data[0]) / len(data[0]) 
-	avg_title_len =  sum(doc[TITLELEN] for doc in data[0]) / len(data[0]) 
-	avg_author_len = sum(doc[AUTHORLEN] for doc in data[0]) / len(data[0]) 
+	avg_body_len = data[2][2]
+	avg_title_len = data[2][1]
+	avg_author_len = data[2][0]
     
 	for query_word in query[1]:
 
@@ -65,7 +65,6 @@ def get_score(query, doc, data):
 
 
 		doc_score = doc_score + ((word_score/(k1+word_score)) * idf) #This could cause problems if word doesnt appear
-
 	return doc_score
 
 
