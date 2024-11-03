@@ -34,6 +34,9 @@ def data_setup():
         txt = re.sub(r'[^a-z0-9\s]', '', txt)
         dictAuthor = {}
         for w in txt.split():
+            if w == "and": continue
+            if w == "et": continue
+            if w == "al": continue
             if w in dictAuthor:
                 dictAuthor[w] += 1
             else:
