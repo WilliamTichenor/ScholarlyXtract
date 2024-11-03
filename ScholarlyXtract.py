@@ -13,15 +13,13 @@ if __name__ == "__main__":
 
     if func == "e":
         query_rels = Evaluation.sort_query_rels()
-        ndcg = Evaluation.get_system_ndcg(data[0], query_rels)
-        print("System NDCG:: " + ndcg)
+        ndcg = Evaluation.get_system_ndcg(data[0],query_rels,data)
+        print("System NDCG:: ", ndcg)
+
+
     elif func == "q":
         user_query = input("Enter Query")
-        #Take user query and convert to bow and total length
-        
-        top_docs = Score.get_top_docs(Evaluation.convert_query_bow(user_query), data)
-        #Do something with those documents returned
-        print(top_docs)
+
 
 
         

@@ -15,21 +15,18 @@ AUTHORLEN = 4
 TITLELEN = 5
 BODYLEN = 6
 
-#Converting dataset queries to our generic query object
-def convert_query(query): #MAY NEED TO REMOVE PUNCUATION
-    words = query[1].lower()
-    words = words.translate(str.maketrans('', '', string.punctuation))
-    words = words.split()
-    bodylen = len(words)
-    term_freq = dict(Counter(words))
 
-    altered_query = {
-        "id": query[0],
-        "bodybow": term_freq,
-        "bodylen": bodylen
-    }
-
-    return altered_query
+def convert_query_bow(s):
+    s = s.lower()
+    s = re.sub(r'[^a-z0-9\s]', '', s)
+    query_split = s.split()
+    bow = {}
+    for w in query_split:
+        if w in bow:
+            bow[w] += 1
+        else:
+            bow[w] = 1
+    return [-1, bow, len(query_split)]
 
 
 #Need organized way to filter queries, documents, and relevance
@@ -43,14 +40,14 @@ def sort_query_rels():
 
 
 #Get ndcg for a single query
-def get_ndcg(query, query_rels, docs):
-    top_docs = Score.get_top_docs(query,docs)
+def get_ndcg(query, query_rels, docs, data):
+    top_docs = Score.get_top_docs(query,docs,data)
 
     ndcg_score = 0
 
     for i, (doc_id, score) in enumerate(top_docs.items()):
-        if doc_id in query_rels[query[ID]]:
-            rel = query_rels[query[ID][doc_id]]
+        if doc_id in query_rels[query[0]]:
+            rel = query_rels[query[0][doc_id]]
             num = pow(2, rel) - 1
             denom = math.log2(1 + i)
             ndcg_score = ndcg_score + (num/denom)
@@ -59,7 +56,7 @@ def get_ndcg(query, query_rels, docs):
 
 
 #Get average ndcg for all queries in dataset
-def get_system_ndcg(docs, query_rels):
+def get_system_ndcg(docs, query_rels, data):
     dataset = ir_datasets.load("cranfield")
 
     total_score = 0
@@ -67,8 +64,9 @@ def get_system_ndcg(docs, query_rels):
 
 
     for q in dataset.queries_iter():
-        query = convert_query(q)
-        query_ndcg = get_ndcg(query,query_rels, docs)
+        query = convert_query_bow(q[1])
+        query[0] = q[0]
+        query_ndcg = get_ndcg(query,query_rels,docs, data)
         total_score = total_score + query_ndcg
         num_queries+=1
     
@@ -77,14 +75,4 @@ def get_system_ndcg(docs, query_rels):
     return system_ndcg
 
 
-def convert_query_bow(s):
-    s = s.lower()
-    s = re.sub(r'[^a-z0-9\s]', '', s)
-    query_split = s.split()
-    bow = {}
-    for w in query_split:
-        if w in bow:
-            bow[w] += 1
-        else:
-            bow[w] = 1
-    return [-1, bow, len(query_split)]
+

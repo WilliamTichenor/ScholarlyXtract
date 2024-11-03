@@ -1,33 +1,3 @@
-'''
-    Document{
-
-	id: 
-	Authorbow: BOW 
-    titlebow: BOW
-	Bodybow: BOW
-	Authorlength: int
-	Titlelength: int
-	Bodylength: int
-
-    }
-
-Query {
-	bodybow: BOW
-	bodylength: 
-}
-
-'''
-
-'''
-
-([list of: [id, author BOW, title BOW, body BOW, author BOW, author len, title len, body len]]               ,                 
- [{total author BOW}, {total title BOW}, {total body BOW}])
-
-
-
-'''
-
-
 #Enum
 ID = 0
 AUTHORBOW = 1
@@ -55,16 +25,13 @@ n = 10
 
 
 #Gets score for one document based on query
-def get_score(query,doc,data):
-
+def get_score(query, doc, data):
 	doc_score = 0
-
-	for query_word, query_freq in query[BODYBOW]:
-
-
-		avg_body_len = sum(doc[BODYLEN] for doc in data[0]) / len(data[0]) 
-		avg_title_len =  sum(doc[TITLELEN] for doc in data[0]) / len(data[0]) 
-		avg_author_len = sum(doc[AUTHORLEN] for doc in data[0]) / len(data[0]) 
+	avg_body_len = sum(doc[BODYLEN] for doc in data[0]) / len(data[0]) 
+	avg_title_len =  sum(doc[TITLELEN] for doc in data[0]) / len(data[0]) 
+	avg_author_len = sum(doc[AUTHORLEN] for doc in data[0]) / len(data[0]) 
+    
+	for query_word in query[1]:
 
 		word_score = 0
 
@@ -90,26 +57,32 @@ def get_score(query,doc,data):
 			author_denom = ((1-B_author) + B_author * (doc[AUTHORLEN]/avg_author_len))
 			author_score = author_score + (author_num/author_denom)
 
-		word_score = (body_score * B_body) + (title_score * B_title) + (author_score * B_author)
+		word_score = (body_score * W_body) + (title_score * W_title) + (author_score * W_author)
 
-		score = score + ((word_score/(k1+word_score)) * data[1][2][query_word]) #This could cause problems if word doesnt appear
+		idf = 0
+		if(query_word in data[1][2]):
+			idf = data[1][2][query_word]
+
+
+		doc_score = doc_score + ((word_score/(k1+word_score)) * idf) #This could cause problems if word doesnt appear
 
 	return doc_score
 
 
-#Gets top n documents based on query
-def get_top_docs(query, docs):
 
-	doc_scores = {} #Dictionary that holds doc id with associated score
+
+def get_top_docs(query, docs, data):
+	doc_scores = {}
 
 	for doc in docs:
-		doc_score = get_score(query,doc)
-		doc_scores[doc[ID]] = doc_score
+		doc_score = get_score(query,doc,data)
+		doc_scores[int(doc[ID])] = doc_score
 
 	sorted_doc_scores = dict(sorted(doc_scores.items(), key=lambda item: item[1], reverse=True))
-
-
 	return dict(list(sorted_doc_scores.items())[:n]) #Only want list of top n documents
+		
+			
 
-	#return sorted_doc_scores
+
+
 
