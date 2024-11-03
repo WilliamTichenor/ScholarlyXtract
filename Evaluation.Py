@@ -3,12 +3,14 @@ import ir_datasets
 from collections import Counter
 from collections import defaultdict
 import math
+import string
 
 
 
 #Converting dataset queries to our generic query object
 def convert_query(query): #MAY NEED TO REMOVE PUNCUATION
     words = query[1].lower()
+    words = words.translate(str.maketrans('', '', string.punctuation))
     words = words.split()
     bodylen = len(words)
     term_freq = dict(Counter(words))
