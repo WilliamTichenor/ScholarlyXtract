@@ -72,10 +72,14 @@ def data_setup():
             if key in totalBOW[2]:
                 totalBOW[2][key] += 1
             else: totalBOW[2][key] = 1
+    
+    authoravg = sum(doc[AUTHORLEN] for doc in data) / len(data)
+    titleavg = sum(doc[TITLELEN] for doc in data) / len(data)
+    bodyavg = sum(doc[BODYLEN] for doc in data) / len(data)
 
 
     saveFile = open("index", 'wb')
-    pickle.dump((data, totalBOW), saveFile)
+    pickle.dump((data, totalBOW, [authoravg, titleavg, bodyavg]), saveFile)
     saveFile.close
     print("data ready!")
 

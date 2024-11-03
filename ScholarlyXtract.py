@@ -8,8 +8,9 @@ if __name__ == "__main__":
 
     DataManager.data_setup()
     data = DataManager.data_load()
+    print(data[2][0])
 
-    func = input("Enter e to evaluate system | Enter q to query")
+    func = input("Enter e to evaluate system | Enter q to query: ")
 
     if func == "e":
         query_rels = Evaluation.sort_query_rels()
@@ -18,7 +19,7 @@ if __name__ == "__main__":
 
 
     elif func == "q":
-        user_query = input("Enter Query")
+        user_query = input("Enter Query: ")
 
 
 
