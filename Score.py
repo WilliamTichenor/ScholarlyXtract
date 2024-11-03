@@ -18,6 +18,26 @@ Query {
 
 '''
 
+'''
+
+([list of: [id, author BOW, title BOW, body BOW, author BOW, author len, title len, body len]]               ,                 
+ [{total author BOW}, {total title BOW}, {total body BOW}])
+
+
+
+'''
+
+
+#Enum
+ID = 0
+AUTHORBOW = 1
+TITLEBOW = 2
+BODYBOW = 3
+AUTHORLEN = 4
+TITLELEN = 5
+BODYLEN = 6
+
+
 #Weights
 k1 = 1.6 #Typically between 1.2-2
 
@@ -30,23 +50,21 @@ W_title = 0.5
 W_author = 0.5
 
 
-#Doc statistics
-doc_freq = {} #List of words and how many documents they appear in
-avg_body_len = 0
-avg_title_len = 0
-avg_author_len = 0
-
 #How many documents we want to return
 n = 10
 
 
 #Gets score for one document based on query
-def get_score(query,doc):
+def get_score(query,doc,data):
 
 	doc_score = 0
 
-	for query_word, query_freq in query["bodybow"]:
+	for query_word, query_freq in query[BODYBOW]:
 
+
+		avg_body_len = sum(doc[BODYLEN] for doc in data[0]) / len(data[0]) 
+		avg_title_len =  sum(doc[TITLELEN] for doc in data[0]) / len(data[0]) 
+		avg_author_len = sum(doc[AUTHORLEN] for doc in data[0]) / len(data[0]) 
 
 		word_score = 0
 
@@ -54,28 +72,27 @@ def get_score(query,doc):
 		title_score = 0
 		author_score = 0
 
-
 		#Body
-		if query_word in doc["bodybow"]:
-			body_num = doc["bodybow"][query_word]
-			body_denom = ((1-B_body) + B_body * (doc["bodylength"]/avg_body_len))
+		if query_word in doc[BODYBOW]:
+			body_num = doc[BODYBOW][query_word]
+			body_denom = ((1-B_body) + B_body * (doc[BODYLEN]/avg_body_len))
 			body_score = body_score + (body_num/body_denom)
 
 		#Title
-		if query_word in doc["titlebow"]:
-			title_num = doc["titlebow"][query_word]
-			title_denom = ((1-B_title) + B_title * (doc["titlelength"]/avg_title_len))
+		if query_word in doc[TITLEBOW]:
+			title_num = doc[TITLEBOW][query_word]
+			title_denom = ((1-B_title) + B_title * (doc[TITLELEN]/avg_title_len))
 			title_score = title_score + (title_num/title_denom)
 
 		#Author
-		if query_word in doc["authorbow"]:
-			author_num = doc["authorbow"][query_word]
-			author_denom = ((1-B_author) + B_author * (doc["authorlength"]/avg_author_len))
+		if query_word in doc[AUTHORBOW]:
+			author_num = doc[AUTHORBOW][query_word]
+			author_denom = ((1-B_author) + B_author * (doc[AUTHORLEN]/avg_author_len))
 			author_score = author_score + (author_num/author_denom)
 
 		word_score = (body_score * B_body) + (title_score * B_title) + (author_score * B_author)
 
-		score = score + ((word_score/(k1+word_score)) * doc_freq[query_word])
+		score = score + ((word_score/(k1+word_score)) * data[1][2][query_word]) #This could cause problems if word doesnt appear
 
 	return doc_score
 
@@ -87,7 +104,7 @@ def get_top_docs(query, docs):
 
 	for doc in docs:
 		doc_score = get_score(query,doc)
-		doc_scores[doc["id"]] = doc_score
+		doc_scores[doc[ID]] = doc_score
 
 	sorted_doc_scores = dict(sorted(doc_scores.items(), key=lambda item: item[1], reverse=True))
 

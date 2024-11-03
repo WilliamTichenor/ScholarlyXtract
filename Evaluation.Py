@@ -5,7 +5,14 @@ from collections import defaultdict
 import math
 import string
 
-
+#Enum
+ID = 0
+AUTHORBOW = 1
+TITLEBOW = 2
+BODYBOW = 3
+AUTHORLEN = 4
+TITLELEN = 5
+BODYLEN = 6
 
 #Converting dataset queries to our generic query object
 def convert_query(query): #MAY NEED TO REMOVE PUNCUATION
@@ -41,8 +48,8 @@ def get_ndcg(query, query_rels, docs):
     ndcg_score = 0
 
     for i, (doc_id, score) in enumerate(top_docs.items()):
-        if doc_id in query_rels[query["id"]]:
-            rel = query_rels[query["id"][doc_id]]
+        if doc_id in query_rels[query[ID]]:
+            rel = query_rels[query[ID][doc_id]]
             num = pow(2, rel) - 1
             denom = math.log2(1 + i)
             ndcg_score = ndcg_score + (num/denom)
