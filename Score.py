@@ -20,10 +20,6 @@ W_title = 2
 W_author = 5
 
 
-#How many documents we want to return
-n = 1400
-
-
 #Gets score for one document based on query
 def get_score(query, doc, data):
 	doc_score = 0
@@ -70,7 +66,7 @@ def get_score(query, doc, data):
 
 
 
-def get_top_docs(query, docs, data):
+def get_top_docs(query, docs, data, n):
 	doc_scores = {}
 
 	for doc in docs:

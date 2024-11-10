@@ -63,7 +63,7 @@ def get_ideal_top_docs(query, query_rels):
 
 #Get ndcg for a single query
 def get_ndcg(query, query_rels, docs, data):
-    top_docs = Score.get_top_docs(query,docs,data)
+    top_docs = Score.get_top_docs(query,docs,data,1400)
     pruned_top_docs = prun_top_docs(top_docs,query, query_rels)
     ndcg_score = 0
 

@@ -92,3 +92,6 @@ def data_load():
     dataLoad = pickle.load(file)
     file.close()
     return dataLoad
+
+if __name__ == "__main__":
+    data_setup()
