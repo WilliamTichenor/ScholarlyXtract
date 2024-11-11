@@ -1,6 +1,4 @@
 import pickle
-import pandas as pd
-import ast
 import re
 import ir_datasets
 
@@ -92,3 +90,6 @@ def data_load():
     dataLoad = pickle.load(file)
     file.close()
     return dataLoad
+
+if __name__ == "__main__":
+    data_setup()
