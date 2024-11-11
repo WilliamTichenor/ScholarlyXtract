@@ -3,7 +3,6 @@ import ir_datasets
 from collections import Counter
 from collections import defaultdict
 import math
-import string
 import re
 
 #Enum

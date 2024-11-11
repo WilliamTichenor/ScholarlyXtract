@@ -1,6 +1,4 @@
 import pickle
-import pandas as pd
-import ast
 import re
 import ir_datasets
 
