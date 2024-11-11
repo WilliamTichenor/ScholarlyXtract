@@ -38,13 +38,13 @@ def index():
             query_rels = Evaluation.sort_query_rels()
             ndcg = Evaluation.get_system_ndcg(g.data[0],query_rels,g.data)
             #print("System NDCG:: ", ndcg)
-            ret = "System Average NDCG: "+str(ndcg)[:5]
+            ret = "<h3>System Average NDCG: "+str(ndcg)[:5]+"</h3>"
         else:
             print("Error!")
     elif request.method == 'GET':
-        return render_template("indexForm.html")
+        return render_template("header.html")+render_template("indexForm.html")+"</body>"
     
-    return render_template("indexForm.html")+ret
+    return render_template("header.html")+render_template("indexForm.html")+ret+"</body>"
 
 @app.route('/docs/<int:doc_id>')
 def show_doc(doc_id):
@@ -52,7 +52,7 @@ def show_doc(doc_id):
     docstore = dataset.docs_store()
     doc = docstore.get(str(doc_id))
     #return "This is document "+str(doc_id)
-    return "<h1>"+doc.title+"</h1>" + "<h2>"+doc.author+"</h2>" + "<p>"+doc.text+"</p>" + "<p>"+doc.bib+"</p>"
+    return render_template("header.html")+"<body><h1>"+doc.title+"</h1>" + "<h2>"+doc.author+"</h2>" + "<p>"+doc.text+"</p>" + "<p>"+doc.bib+"</p></body>"
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=8080, debug=True)
